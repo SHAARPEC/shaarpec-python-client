@@ -1,3 +1,4 @@
 .gitignore
 notebooks/*
 **/__pycache__/*
+**/dist/*
