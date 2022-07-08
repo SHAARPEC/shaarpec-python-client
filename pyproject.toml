@@ -1,13 +1,22 @@
 [tool.poetry]
 name = "shaarpec"
 version = "0.1.0"
-description = ""
+description = "Client for SHAARPEC Analytics API."
 authors = ["Erik G. Brandt <erik.brandt@shaarpec.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
+httpx = "^0.23.0"
+oidcish = "0.1.2"
 
+
+[tool.poetry.group.dev.dependencies]
+jupyterlab = "^3.4.3"
+black = "^22.6.0"
+pylint = "^2.14.4"
+isort = "^5.10.1"
+jupytext = "^1.14.0"
 
 [build-system]
 requires = ["poetry-core"]
