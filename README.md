@@ -168,7 +168,8 @@ might return
     'is_alive': True,
     'gender': 'F',
     'deceased_year': 0},
-...
+ ...
+]
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
