@@ -140,7 +140,7 @@ The client is now connected to the API and can get data and post computations. V
 client.get("terminology/allergy_type").json()
 ```
 might return
-```json
+```
 {'419263009': 'Allergy to tree pollen',
  '420174000': 'Allergy to wheat',
  '425525006': 'Allergy to dairy product',
@@ -162,7 +162,7 @@ or
 client.get("population", conditions=["T78.2", "K81.0"])
 ```
 might return
-```json
+```
 [{'patient_origin_id': '4c92f494-3c98-f8dd-1473-da9eb0196f6f',
     'age': '10-16',
     'is_alive': True,
