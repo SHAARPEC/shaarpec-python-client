@@ -623,7 +623,7 @@ test = ["coverage", "ipykernel", "pre-commit", "pytest-console-scripts", "pytest
 
 [[package]]
 name = "jupyterlab"
-version = "3.4.3"
+version = "3.4.5"
 description = "JupyterLab computational environment"
 category = "dev"
 optional = false
@@ -635,13 +635,14 @@ jinja2 = ">=2.1"
 jupyter-core = "*"
 jupyter-server = ">=1.16,<2.0"
 jupyterlab-server = ">=2.10,<3.0"
-nbclassic = ">=0.2,<1.0"
+nbclassic = "*"
+notebook = "<7"
 packaging = "*"
 tornado = ">=6.1.0"
 
 [package.extras]
-test = ["check-manifest", "coverage", "jupyterlab-server", "pytest (>=6.0)", "pytest-cov", "pytest-console-scripts", "pytest-check-links (>=0.5)", "requests", "requests-cache", "virtualenv", "pre-commit"]
 ui-tests = ["build"]
+test = ["virtualenv", "requests-cache", "requests", "pytest-check-links (>=0.5)", "pytest-console-scripts", "pytest-cov", "pytest (>=6.0)", "pre-commit", "jupyterlab-server", "coverage", "check-manifest"]
 
 [[package]]
 name = "jupyterlab-code-formatter"
@@ -906,6 +907,36 @@ description = "Patch asyncio to allow nested event loops"
 category = "dev"
 optional = false
 python-versions = ">=3.5"
+
+[[package]]
+name = "notebook"
+version = "6.4.12"
+description = "A web-based notebook environment for interactive computing"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+argon2-cffi = "*"
+ipykernel = "*"
+ipython-genutils = "*"
+jinja2 = "*"
+jupyter-client = ">=5.3.4"
+jupyter-core = ">=4.6.1"
+nbconvert = ">=5"
+nbformat = "*"
+nest-asyncio = ">=1.5"
+prometheus-client = "*"
+pyzmq = ">=17"
+Send2Trash = ">=1.8.0"
+terminado = ">=0.8.3"
+tornado = ">=6.1"
+traitlets = ">=4.2.1"
+
+[package.extras]
+test = ["requests-unixsocket", "pytest-cov", "selenium", "nbval", "testpath", "requests", "coverage", "pytest"]
+json-logging = ["json-logging"]
+docs = ["myst-parser", "sphinx-rtd-theme", "sphinxcontrib-github-alt", "nbsphinx", "sphinx"]
 
 [[package]]
 name = "notebook-shim"
@@ -1533,7 +1564,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "a59aa4446cc0fe55f5ef391047e2d7d338b22342f9c743f4867491bafbc7d8c6"
+content-hash = "ea1da128f2de128bac4054f3337eee672bf093aad8dd37c14a9126d2173873c0"
 
 [metadata.files]
 anybadge = []
@@ -1663,10 +1694,7 @@ jupyter-client = [
 ]
 jupyter-core = []
 jupyter-server = []
-jupyterlab = [
-    {file = "jupyterlab-3.4.3-py3-none-any.whl", hash = "sha256:f028f4c6a4171785c4a1d592ca9bf36812047703e4aa981482cd3872eb0fc169"},
-    {file = "jupyterlab-3.4.3.tar.gz", hash = "sha256:e2dcc40e94366dde5de4b19e8c43ee133cf041b852d01a3625a7cf29532da49d"},
-]
+jupyterlab = []
 jupyterlab-code-formatter = []
 jupyterlab-pygments = []
 jupyterlab-server = []
@@ -1782,6 +1810,7 @@ nbconvert = [
 ]
 nbformat = []
 nest-asyncio = []
+notebook = []
 notebook-shim = [
     {file = "notebook_shim-0.1.0-py3-none-any.whl", hash = "sha256:02432d55a01139ac16e2100888aa2b56c614720cec73a27e71f40a5387e45324"},
     {file = "notebook_shim-0.1.0.tar.gz", hash = "sha256:7897e47a36d92248925a2143e3596f19c60597708f7bef50d81fcd31d7263e85"},
