@@ -49,14 +49,18 @@ class Client:
     ...
     """
 
-    def __init__(self, host: str, auth: Union[CodeFlow, DeviceFlow]) -> None:
+    def __init__(self, host: str, auth: Union[CodeFlow, DeviceFlow], **kwargs) -> None:
+        timeout = kwargs.pop('timeout',60)
         self._auth = auth
         self._client = httpx.Client(
-            base_url=host, headers={"accept": "application/json"}
+            base_url=host,
+            timeout=timeout,
+            headers={"accept": "application/json"},
+            **kwargs
         )
 
     @classmethod
-    def with_device(cls, host: str, auth: DeviceSettings) -> Client:
+    def with_device(cls, host: str, auth: DeviceSettings, **kwargs) -> Client:
         """Authenticate with IDP server using device flow.
 
         The client on the IDP server must support device flow. Authentication arguments can be
@@ -99,10 +103,10 @@ class Client:
         """
         auth_dict = dict(auth)
         auth_host = auth_dict.pop("host")
-        return cls(host=host, auth=DeviceFlow(host=auth_host, **auth_dict))
+        return cls(host=host, auth=DeviceFlow(host=auth_host, **auth_dict), **kwargs)
 
     @classmethod
-    def with_code(cls, host: str, auth: CodeSettings) -> Client:
+    def with_code(cls, host: str, auth: CodeSettings, **kwargs) -> Client:
         """Authenticate with IDP server using code flow.
 
         The client on the IDP server must support code flow. Authentication arguments can be
@@ -152,7 +156,7 @@ class Client:
         """
         auth_dict = dict(auth)
         auth_host = auth_dict.pop("host")
-        return cls(host=host, auth=CodeFlow(host=auth_host, **auth_dict))
+        return cls(host=host, auth=CodeFlow(host=auth_host, **auth_dict), **kwargs)
 
     @property
     def auth(self) -> Union[CodeFlow, DeviceFlow]:
