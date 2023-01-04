@@ -9,7 +9,7 @@ from oidcish.code import CodeFlow, CodeSettings
 
 
 class Client:
-    """Client for SHAARPEC Analytics API.
+    """Client for SHAARPEC Analytics API
 
     The input is the base URL to the Analytics API and authentication credentials via device or
     code flow. The `.with_device(...)` and `.with_code(...)` class methods are provided and can
@@ -50,13 +50,13 @@ class Client:
     """
 
     def __init__(self, host: str, auth: Union[CodeFlow, DeviceFlow], **kwargs) -> None:
-        timeout = kwargs.pop('timeout',60)
+        timeout = kwargs.pop("timeout", 60)
         self._auth = auth
         self._client = httpx.Client(
             base_url=host,
             timeout=timeout,
             headers={"accept": "application/json"},
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
