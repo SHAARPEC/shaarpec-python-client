@@ -182,3 +182,32 @@ class Client:
         )
 
         return response
+
+    # pylint: disable=too-many-arguments
+    def post(
+        self, uri: str, content=None, data=None, files=None, json=None, **kwargs
+    ) -> httpx.Response:
+        """Post to the resource at `uri`.
+
+        Keyword arguments are passed as query parameters.
+        """
+        access_token = (
+            self.auth.credentials.access_token
+            if self.auth.credentials is not None
+            else "no-token"
+        )
+        response = self._client.post(
+            uri,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "x-auth-request-access-token": access_token,
+            },
+            params=kwargs,
+        )
+
+        return response
+
