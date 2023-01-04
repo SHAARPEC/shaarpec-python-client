@@ -135,7 +135,11 @@ The user visits the website, verifies that the user code is correct and confirms
 
 > SUCCESS: Authentication was successful. Took XX.Y seconds.
 
-The client is now connected to the API and can get data and post computations. Visit the Analytics API Base URL to interactively test the endpoints and read their documentation and about their path and query parameters. These parameters are used in the regular (`requests` and `httpx`) way with `client.verb` calls, where `verb` is either `get` or `post`. For example (remember, API responses are returned as `httpx.Response` objects):
+The client is now connected to the API. Visit the Analytics API Base URL to interactively test the endpoints and read their documentation and about their path and query parameters. These parameters are used in the regular (`requests` and `httpx`) way with `client.verb` calls, where `verb` is either `get` or `post`. 
+
+### GET and POST
+
+The `get` and `post` verbs are supported in the standard way. For example (API responses are returned as `httpx.Response` objects):
 ```python
 client.get("terminology/allergy_type").json()
 ```
@@ -171,6 +175,34 @@ might return
  ...
 ]
 ```
+
+### Running tasks
+
+SHAARPEC Analytics API supports long-running tasks by `POST`:ing to `/service/path/to/endpoint`, and then polling with `GET` to `/service/tasks/{task_id}/status` until the result becomes available at `/service/tasks/{task_id}/results`. There is a `run` function in the library that performs this pattern.
+
+For example
+
+```python
+task = client.run("population/conditions")
+```
+
+will return a task with the comorbidities in the entire population. A task is a Pydantic model with the following properties:
+
+```python
+class Task(BaseModel):
+    """A running task."""
+    service: str
+    task_id: str
+    submitted_at: str
+    status: str
+    success: Optional[bool]
+    progress: Optional[float]
+    result: Optional[Any]
+    error: Optional[Any]
+```
+As you can see, the success, progress, result and error are optional and updated automatically when available.
+
+The method comes with a progress bar for jupyter which can be disabled via `client.run("path/to/task", progress_bar=False)`.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
