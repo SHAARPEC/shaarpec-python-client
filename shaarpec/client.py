@@ -4,7 +4,7 @@ from typing import Union
 
 import httpx
 
-from oidcish.device import DeviceFlow, DeviceSettings
+from oidcish.device import DeviceFlow
 from oidcish.code import CodeFlow, CodeSettings
 
 
@@ -60,7 +60,7 @@ class Client:
         )
 
     @classmethod
-    def with_device(cls, host: str, auth: DeviceSettings, **kwargs) -> Client:
+    def with_device(cls, host: str, auth: dict[str, Any], **kwargs) -> Client:
         """Authenticate with IDP server using device flow.
 
         The client on the IDP server must support device flow. Authentication arguments can be
@@ -101,9 +101,8 @@ class Client:
         >>> client.get("terminology/allergy_type").json()
         ...
         """
-        auth_dict = dict(auth)
-        auth_host = auth_dict.pop("host")
-        return cls(host=host, auth=DeviceFlow(host=auth_host, **auth_dict), **kwargs)
+        auth_host = auth.pop("host")
+        return cls(host=host, auth=DeviceFlow(host=auth_host, **auth), **kwargs)
 
     @classmethod
     def with_code(cls, host: str, auth: CodeSettings, **kwargs) -> Client:
