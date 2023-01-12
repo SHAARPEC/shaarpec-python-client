@@ -1,47 +1,16 @@
 """Client for SHAARPEC Analytics API."""
 from __future__ import annotations
-from typing import Optional, Union, Any
+from typing import Union, Any
 import pathlib
 import time
 
-from pydantic import BaseModel
-from tqdm.notebook import tqdm
 import background
 import httpx
 
 from oidcish.device import DeviceFlow
 from oidcish.code import CodeFlow, CodeSettings
 
-
-class Task(BaseModel):
-    """A running task."""
-
-    service: str
-    task_id: str
-    submitted_at: str
-    status: str
-    success: Optional[bool]
-    progress: Optional[float]
-    result: Optional[Any]
-    error: Optional[Any]
-
-    @background.task
-    def print(self, update_interval: float = 0.1) -> None:
-        """Print the progress of the task."""
-        initial = 0 if self.progress is None else int(100 * self.progress)
-
-        with tqdm(initial=initial, total=100) as pbar:
-            pbar.set_description(f"Task {self.status}")
-
-            while self.status in ("submitted", "queued", "in_progress"):
-                fraction = 0 if self.progress is None else self.progress
-                pbar.update(int(100 * fraction) - pbar.n)
-                pbar.set_description(f"Task {self.status}")
-                time.sleep(update_interval)
-
-            pbar.set_description(
-                f"Task completed ({'successfully' if self.success else 'failed'})"
-            )
+from shaarpec.tasks import Task
 
 
 class Client:
@@ -282,6 +251,7 @@ class Client:
             progress=None,
             result=None,
             error=None,
+            debugger=None,
         )
 
         if progress_bar:
