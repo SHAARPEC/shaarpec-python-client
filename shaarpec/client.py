@@ -239,6 +239,13 @@ class Client:
             uri=uri, content=content, data=data, files=files, json=json, **kwargs
         )
 
+        if response.status_code != 202:
+            raise RuntimeError(
+                "Did not receive 202 Accepted for the task. "
+                f"The actual response code was {response.status_code}. "
+                f"The actual message was {response.text}."
+            )
+
         task_id = response.json().get("task_id")
         submitted_at = response.json().get("submitted_at")
 
