@@ -40,3 +40,15 @@ class Task(BaseModel):
                 f"Task completed ({'successfully' if self.success else 'failed'})"
             )
 
+    def wait_for_result(self, poll_interval: float = 0.1) -> Optional[Any]:
+        """Return when result becomes available."""
+        while self.status in ("submitted", "queued", "in_progress"):
+            time.sleep(poll_interval)
+
+        if not self.success:
+            raise ValueError(
+                f"Task failed with status {self.status} and "
+                f"{'error: ' + self.error if self.error else 'no message.'}"
+            )
+
+        return self.result
