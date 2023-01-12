@@ -199,10 +199,16 @@ class Task(BaseModel):
     progress: Optional[float]
     result: Optional[Any]
     error: Optional[Any]
+    debugger: Optional[Any]
 ```
-As you can see, the success, progress, result and error are optional and updated automatically when available.
+As you can see, the success, progress, result and error are optional and updated automatically when available. The method comes with a progress bar for jupyter which can be disabled via `client.run("path/to/task", progress_bar=False)`. If you want to use the task result in a subsequent command, you can easily wait (blocking) for the result with the `task.wait_for_result()` method:
 
-The method comes with a progress bar for jupyter which can be disabled via `client.run("path/to/task", progress_bar=False)`.
+```python
+task = client.run("path/to/task")
+print(f"The result is: {task.wait_for_result()}!")
+```
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
