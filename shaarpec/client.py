@@ -14,11 +14,11 @@ from shaarpec.tasks import Task
 
 
 class Client:
-    """Client for SHAARPEC Analytics API
+    """Client for SHAARPEC Analytics API.
 
     The input is the base URL to the Analytics API and authentication credentials via device or
     code flow. The `.with_device(...)` and `.with_code(...)` class methods are provided and can
-    be used to construct a client . See examples of usage.
+    be used to construct a client. See examples of usage.
 
     API data is returned as `httpx.Response` objects.
     \f
@@ -26,9 +26,21 @@ class Client:
     --------
     >>> from shaarpec import Client
     >>> client = Client.with_device(
-            "https://api.shaarpec.com/",
-            auth={"host": "https://idp.shaarpec.com"})
+            host="https://api.shaarpec.com/",
+            auth={
+                "host": "https://idp.shaarpec.com"
+                "client_id": ...,
+                "client_secret": ...,
+                "audience": ...,
+                "scope": ...
+            }
         )
+    # Or
+    # >>> client = Client.with_device(
+    #        host="https://api.shaarpec.com/",
+    #        auth="./path/to/my/env.file"
+    #    )
+    #
     >>> client.get("terminology/allergy_type").json()
     {'419263009': 'Allergy to tree pollen',
      '420174000': 'Allergy to wheat',
@@ -80,15 +92,22 @@ class Client:
         Parameters
         ----------
           host : str
-            The IDP host name.
-          **kwargs : Authentication details and other arguments.
+            The Analytics API base URL.
+          auth : dict or string
+            Authentication details and other arguments.
 
-            Valid authentication arguments are:
-              client_id: str, The client ID.
-              client_secret: str, The client secret.
-              scope: str, A space separated, case-sensitive list of scopes.
-                          (Default = openid profile offline_access)
-              audience: str = The access claim was designated for this audience.
+            If dict, then valid keywords in this dict are:
+              host: str, The IDP host name (OIDCISH_HOST).
+              client_id: str, The client ID (OIDCISH_CLIENT_ID).
+              client_secret: str, The client secret (OIDCISH_CLIENT_SECRET).
+              scope: str, A space separated, case-sensitive list of scopes
+                (OIDCISH_SCOPE).
+                          (default: openid profile offline_access)
+              audience: str, The access claim was designated for this audience
+                (OIDCISH_AUDIENCE).
+
+            If string, then path to file with the corresponding variables.
+
 
         Examples
         --------
@@ -103,10 +122,10 @@ class Client:
                     "audience": ...,
                 }
             )
-        # Or, read auth variables from .env in working dir
+        # Or, read auth variables from env file
         >>> client = Client.with_device(
-                "https://api.shaarpec.com",
-                auth={"host": "https://idp.example.com"}
+                host="https://api.shaarpec.com",
+                auth="path/to/my/file.env"
             )
         >>> client.get("terminology/allergy_type").json()
         ...
@@ -120,26 +139,32 @@ class Client:
     ) -> Client:
         """Authenticate with IDP server using code flow.
 
-        The client on the IDP server must support code flow. Authentication arguments can be
-        provided as keywords or omitted and read from a .env file in the working directory.
-        The environment variables are prefixed with OIDCISH, so OIDCISH_CLIENT_ID etc.
+        The IDP host must support authorization code flow. Authentication can be
+        provided to `auth` as a dict, as environment variables, or as the path to an
+        env file. The environment variables are always prefixed with OIDCISH, so
+        OIDCISH_CLIENT_ID etc.
         \f
         Parameters
         ----------
           host : str
-            The IDP host name.
-          **kwargs : Authentication details and other arguments.
+             The Analytics API base URL.
+          auth : dict or str,
+            Authentication details and other arguments.
 
-            Valid authentication arguments are:
-              client_id: str, The client ID.
-              client_secret: str, The client secret.
-              redirect_uri: str, Must exactly match one of the allowed redirect URIs for the client.
-                                 (Default = http://localhost)
-              username: str = The user name.
-              password: str = The user password.
-              scope: str, A space separated, case-sensitive list of scopes.
-                          (Default = openid profile offline_access)
-              audience: str = The access claim was designated for this audience.
+            If dict, then valid keyword in this dict are:
+              host: str, The IDP host name (OIDCISH_HOST).
+              client_id: str, The client ID (OIDCISH_CLIENT_ID).
+              client_secret: str, The client secret (OIDCISH_CLIENT_SECRET).
+              redirect_uri: str, Must exactly match one of the allowed redirect URIs
+                for the client (OIDCISH_REDIRECT_URI).
+                (default: http://localhost)
+              username: str = The user name (OIDCISH_USERNAME).
+              password: str = The user password (OIDCISH_PASSWORD).
+              scope: str, A space separated, case-sensitive list of scopes
+                (OIDCISH_SCOPE).
+                          (default: openid profile offline_access)
+              audience: str = The access claim was designated for this audience
+                (OIDCISH_AUDIENCE).
 
         Examples
         --------
@@ -157,10 +182,10 @@ class Client:
                     "audience": ...,
                 }
             )
-        # Or, read auth variables from .env in working dir
+        # Or, read auth variables from env file
         >>> client = Client.with_code(
-                "https://api.shaarpec.com",
-                auth={"host": "https://idp.example.com"}
+                host="https://api.shaarpec.com",
+                auth="path/to/my/file.env"
             )
         >>> client.get("terminology/allergy_type").json()
         ...
