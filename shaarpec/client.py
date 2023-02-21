@@ -8,7 +8,7 @@ import background
 import httpx
 
 from oidcish.device import DeviceFlow
-from oidcish.code import CodeFlow, CodeSettings
+from oidcish.code import CodeFlow
 
 from shaarpec.tasks import Task
 
