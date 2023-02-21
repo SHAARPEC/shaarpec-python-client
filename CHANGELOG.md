@@ -1,3 +1,9 @@
+## 2.2.0 (February 22, 2023)
+- Add connect without authentication.
+- Better handling of 401 error.
+- Fix progress bar in jupyter.
+- Upgrade dependencies.
+
 ## 2.1.0 (January 12, 2023)
 - Add function that waits for task result.
 - Check that task was accepted before proceeding.
