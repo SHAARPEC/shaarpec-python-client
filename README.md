@@ -68,9 +68,9 @@
 
 [![SHAARPEC API screenshot][product-screenshot]](https://www.shaarpec.com)
 
-This project is a Python client for convenient access to the SHAARPEC Analytics API, including automated authentication handling via device or code flow.
+This is a Python client for simple access to the SHAARPEC Analytics API. Authentication is handled automatically via device flow or authorization code flow. Authentication can also be disabled if accessing a public Analytics API.
 
-The SHAARPEC Analytics API provides calculations on the healthcare organization's resources, capacities, clinical outcomes, and much more. These results can be accessed via a standard REST API protected by the SHAARPEC Identity Server.
+The SHAARPEC Analytics API provides calculations on the healthcare organization's resources, capacities, clinical outcomes, and much more. These results can be accessed via a standard REST API, which is usually protected by the SHAARPEC Identity Server.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -86,7 +86,7 @@ The SHAARPEC Analytics API provides calculations on the healthcare organization'
 
 ### Prerequisites
 
-The shaarpec client is used as a regular Python library. As always, it is a good idea to install a Python library in an isolated virtual environment.
+The shaarpec client is used as a standard Python library. It is always a good idea to install the library in a virtual environment.
 
 ### Installation
 
@@ -97,6 +97,7 @@ The shaarpec client is used as a regular Python library. As always, it is a good
 2. Store your credentials to the SHAARPEC IdentityServer in an .env file.
    ```bash
    $ cat .env
+   OIDCISH_HOST="https://idp.example.com"
    OIDCISH_CLIENT_ID="my client id"
    OIDCISH_CLIENT_SECRET="my client secret"
    OIDCISH_AUDIENCE="shaarpec_api.full_access_scope"
@@ -108,24 +109,32 @@ The shaarpec client is used as a regular Python library. As always, it is a good
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-This library provides a Client class to easily interact with the SHAARPEC Analytics API. The class methods `Client.with_device(...)` and `Client.with_code(...)` class create clients that authenticate with the SHAARPEC IdentityServer with either device (not tied to an individual user, recommended) or code flow (tied to an individual user, for debugging and development).
+This library provides a Client class to easily interact with the SHAARPEC Analytics API. The class methods `Client.with_device(...)` and `Client.with_code(...)` class create clients that authenticate with the SHAARPEC IdentityServer with either device (not tied to an individual user, recommended) or code flow (tied to an individual user, for debugging and development). There is also a class method `Client.without_auth(...)` that does not invoke the IDP server (but will only work if the Analytics API is public, otherwise give 401 Authentication invalid errors).
 
 All API data is returned as `httpx.Response` objects.
 
-Let's look at some code examples on how to get data from the Analytics API. First, import the client class.
+Let's look at some code examples on how to get data from the Analytics API. First, import the client.
 ```python
 from shaarpec import Client
 ```
 
-Next, use [device flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/device-authorization-flow) or [code flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) to connect the client to the API with the `Client.with_device` and/or `Client.with_code` class methods.
+Next, use [device flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/device-authorization-flow) or [code flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) to connect the client to the API with the `Client.with_device(...)` and/or `Client.with_code(...)` class methods.
 
 The credentials can either be stored in a .env file in the working directory (as explained in the Prerequisites section) or given directly as arguments to the `auth` dict:e
 ```python
-# Using a client with device flow.
+# Create a client with device flow, give authentication details directly.
 client = Client.with_device(
         host="https://api.shaarpec.com/",
-        auth={"host": "https://idp.shaarpec.com"}
+        auth={
+            "host": "https://idp.shaarpec.com",
+            "client_id": ...,
+            "client_secret": ...,
+            "scope": ...,
+            "audience": ...
+        }
     )
+# Create a client with device flow, read authentication details from .env file.
+client = Client.with_device(host="https://api.shaarpec.com/", auth="path/to/.env")
 ```
 Here `host` is the base URL to the Analytics API and `auth` is a dictionary with the login credentials. With device flow, the user needs to finish the sign-in by visiting a url provided by the IdentityServer. A message will be shown:
 
@@ -186,7 +195,7 @@ For example
 task = client.run("population/conditions")
 ```
 
-will return a task with the comorbidities in the entire population. A task is a Pydantic model with the following properties:
+will return a task with the comorbidities in the entire population. A task is a [Pydantic](https://docs.pydantic.dev/) model with the following properties:
 
 ```python
 class Task(BaseModel):
@@ -201,7 +210,7 @@ class Task(BaseModel):
     error: Optional[Any]
     debugger: Optional[Any]
 ```
-As you can see, the success, progress, result and error are optional and updated automatically when available. The method comes with a progress bar for jupyter which can be disabled via `client.run("path/to/task", progress_bar=False)`. If you want to use the task result in a subsequent command, you can easily wait (blocking) for the result with the `task.wait_for_result()` method:
+As you can see, the success, progress, result and error are optional and updated automatically when available. The method comes with a progress bar which can be disabled via `client.run("path/to/task", progress_bar=False)`. If you want to use the task result in a subsequent command, you can wait (blocking) for the result with the `task.wait_for_result()` method:
 
 ```python
 task = client.run("path/to/task")
