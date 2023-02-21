@@ -1,6 +1,6 @@
 """Client for SHAARPEC Analytics API."""
 from __future__ import annotations
-from typing import Union, Any
+from typing import Optional, Union, Any
 import pathlib
 import time
 
@@ -54,7 +54,9 @@ class Client:
     ...
     """
 
-    def __init__(self, host: str, auth: Union[CodeFlow, DeviceFlow], **kwargs) -> None:
+    def __init__(
+        self, host: str, auth: Optional[Union[CodeFlow, DeviceFlow]], **kwargs
+    ) -> None:
         timeout = kwargs.pop("timeout", 60)
         self._auth = auth
         self._client = httpx.Client(
@@ -65,12 +67,15 @@ class Client:
         )
 
     @classmethod
-    def with_device(cls, host: str, auth: dict[str, Any], **kwargs) -> Client:
-        """Authenticate with IDP server using device flow.
+    def with_device(
+        cls, host: str, auth: Union[dict[str, Any], str, None], **kwargs
+    ) -> Client:
+        """Authenticate with IDP host using device flow.
 
-        The client on the IDP server must support device flow. Authentication arguments can be
-        provided as keywords or omitted and read from a .env file in the working directory.
-        The environment variables are prefixed with OIDCISH, so OIDCISH_CLIENT_ID etc.
+        The IDP host must support device flow. Authentication can be provided to
+        `auth` as a dict, as environment variables, or as the path to an env file. The
+        environment variables are always prefixed with OIDCISH, so OIDCISH_CLIENT_ID
+        etc.
         \f
         Parameters
         ----------
@@ -110,7 +115,9 @@ class Client:
         return cls(host=host, auth=DeviceFlow(host=auth_host, **auth), **kwargs)
 
     @classmethod
-    def with_code(cls, host: str, auth: CodeSettings, **kwargs) -> Client:
+    def with_code(
+        cls, host: str, auth: Optional[dict[str, Any]] = None, **kwargs
+    ) -> Client:
         """Authenticate with IDP server using code flow.
 
         The client on the IDP server must support code flow. Authentication arguments can be
@@ -163,7 +170,7 @@ class Client:
         return cls(host=host, auth=CodeFlow(host=auth_host, **auth_dict), **kwargs)
 
     @property
-    def auth(self) -> Union[CodeFlow, DeviceFlow]:
+    def auth(self) -> Optional[Union[CodeFlow, DeviceFlow]]:
         """Return the authentication credentials."""
         return self._auth
 
