@@ -130,8 +130,18 @@ class Client:
         >>> client.get("terminology/allergy_type").json()
         ...
         """
-        auth_host = auth.pop("host")
-        return cls(host=host, auth=DeviceFlow(host=auth_host, **auth), **kwargs)
+        match auth:
+            case None:
+                return cls(host=host, auth=None, **kwargs)
+            case str():
+                return cls(host=host, auth=DeviceFlow(_env_file=auth), **kwargs)
+            case dict():
+                auth_host = auth.pop("host")
+                return cls(host=host, auth=DeviceFlow(host=auth_host, **auth), **kwargs)
+            case _:
+                raise TypeError(
+                    f"Object {auth} is not of recognized type ({type(auth)})."
+                )
 
     @classmethod
     def with_code(
@@ -190,9 +200,37 @@ class Client:
         >>> client.get("terminology/allergy_type").json()
         ...
         """
-        auth_dict = dict(auth)
-        auth_host = auth_dict.pop("host")
-        return cls(host=host, auth=CodeFlow(host=auth_host, **auth_dict), **kwargs)
+        match auth:
+            case None:
+                return cls(host=host, auth=None, **kwargs)
+            case str():
+                return cls(host=host, auth=CodeFlow(_env_file=auth), **kwargs)
+            case dict():
+                auth_host = auth.pop("host")
+                return cls(host=host, auth=CodeFlow(host=auth_host, **auth), **kwargs)
+            case _:
+                raise TypeError(
+                    f"Object {auth} is not of recognized type ({type(auth)})."
+                )
+
+    @classmethod
+    def without_auth(cls, host: str, **kwargs) -> Client:
+        """Create a client that does not use authentication.
+
+        \f
+        Parameters
+        ----------
+          host : str
+            The Analytics API base URL.
+
+        Examples
+        --------
+        >>> from shaarpec import Client
+        >>> client = Client.without_auth("https://api.shaarpec.com")
+        >>> client.get("terminology/allergy_type").json()
+        ...
+        """
+        return cls(host=host, auth=None, **kwargs)
 
     @property
     def auth(self) -> Optional[Union[CodeFlow, DeviceFlow]]:
@@ -204,17 +242,20 @@ class Client:
 
         Keyword arguments are passed as query parameters.
         """
-        access_token = (
-            self.auth.credentials.access_token
-            if self.auth.credentials is not None
-            else "no-token"
-        )
+        headers = {}
+
+        if (auth := self.auth) is not None:
+            if (credentials := auth.credentials) is not None:
+                access_token = credentials.access_token
+
+                headers = {
+                    "Authorization": f"Bearer {access_token}",
+                    "x-auth-request-access-token": access_token,
+                }
+
         response = self._client.get(
             uri,
-            headers={
-                "Authorization": f"Bearer {access_token}",
-                "x-auth-request-access-token": access_token,
-            },
+            headers=headers,
             params=kwargs,
         )
 
@@ -228,21 +269,24 @@ class Client:
 
         Keyword arguments are passed as query parameters.
         """
-        access_token = (
-            self.auth.credentials.access_token
-            if self.auth.credentials is not None
-            else "no-token"
-        )
+        headers = {}
+
+        if (auth := self.auth) is not None:
+            if (credentials := auth.credentials) is not None:
+                access_token = credentials.access_token
+
+                headers = {
+                    "Authorization": f"Bearer {access_token}",
+                    "x-auth-request-access-token": access_token,
+                }
+
         response = self._client.post(
             uri,
             content=content,
             data=data,
             files=files,
             json=json,
-            headers={
-                "Authorization": f"Bearer {access_token}",
-                "x-auth-request-access-token": access_token,
-            },
+            headers=headers,
             params=kwargs,
         )
 
