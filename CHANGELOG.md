@@ -1,3 +1,6 @@
+## 2.2.1 (February 23, 2023)
+- Fixed progressbar in console and notebook (see https://github.com/tqdm/tqdm/issues/1359).
+
 ## 2.2.0 (February 22, 2023)
 - Add connect without authentication.
 - Better handling of 401 error.

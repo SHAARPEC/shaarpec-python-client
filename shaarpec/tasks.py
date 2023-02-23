@@ -3,7 +3,7 @@ from typing import Optional, Any
 import time
 
 from pydantic import BaseModel
-from tqdm import tqdm
+from tqdm.auto import tqdm
 import background
 
 from shaarpec.utils import Debugger
