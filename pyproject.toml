@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shaarpec"
-version = "2.2.1"
+version = "2.2.2"
 description = "Client for SHAARPEC Analytics API."
 authors = ["Erik G. Brandt <erik.brandt@shaarpec.com>"]
 readme = "README.md"
@@ -35,6 +35,7 @@ pylint = "^2.16.2"
 tqdm = "^4.64.1"
 ipywidgets = "^7.6.5"
 executing = "^1.2.0"
+jupyterlab-widgets = "^3.0.5"
 
 
 [tool.poetry.group.dev.dependencies]

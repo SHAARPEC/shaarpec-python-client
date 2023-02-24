@@ -1,3 +1,6 @@
+## 2.2.2 (February 24, 2023)
+- Fixed package dependency for progressbar.
+
 ## 2.2.1 (February 23, 2023)
 - Fixed progressbar in console and notebook (see https://github.com/tqdm/tqdm/issues/1359).
 
