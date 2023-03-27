@@ -68,7 +68,7 @@
 
 [![SHAARPEC API screenshot][product-screenshot]](https://www.shaarpec.com)
 
-This is a Python client for simple access to the SHAARPEC Analytics API. Authentication is handled automatically via device flow or authorization code flow. Authentication can also be disabled if accessing a public Analytics API.
+This is a Python client for simple access to the SHAARPEC Analytics API. Authentication is handled automatically via device flow, authorization code flow, or client credentials flow. Authentication can also be disabled if accessing a public Analytics API.
 
 The SHAARPEC Analytics API provides calculations on the healthcare organization's resources, capacities, clinical outcomes, and much more. These results can be accessed via a standard REST API, which is usually protected by the SHAARPEC Identity Server.
 
@@ -109,7 +109,7 @@ The shaarpec client is used as a standard Python library. It is always a good id
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-This library provides a Client class to easily interact with the SHAARPEC Analytics API. The class methods `Client.with_device(...)` and `Client.with_code(...)` class create clients that authenticate with the SHAARPEC IdentityServer with either device (not tied to an individual user, recommended) or code flow (tied to an individual user, for debugging and development). There is also a class method `Client.without_auth(...)` that does not invoke the IDP server (but will only work if the Analytics API is public, otherwise give 401 Authentication invalid errors).
+This library provides a Client class to easily interact with the SHAARPEC Analytics API. The class methods `Client.with_device(...)`,  `Client.with_code(...)`, and `Client.with_credentials(...)` create clients that authenticate with the SHAARPEC IdentityServer with either device flow (not tied to an individual user, recommended), code flow (tied to an individual user, for debugging and development), or credentials flow (non-interactive). There is also a class method `Client.without_auth(...)` that does not invoke the IDP server (but will only work if the Analytics API is public, otherwise give 401 Authentication invalid errors).
 
 All API data is returned as `httpx.Response` objects.
 
@@ -118,9 +118,9 @@ Let's look at some code examples on how to get data from the Analytics API. Firs
 from shaarpec import Client
 ```
 
-Next, use [device flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/device-authorization-flow) or [code flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) to connect the client to the API with the `Client.with_device(...)` and/or `Client.with_code(...)` class methods.
+Next, use [device flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/device-authorization-flow) or [code flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) to connect the client to the API with the `Client.with_device(...)`, `Client.with_code(...)`, and/or `Client.with_credentials(...)` class methods.
 
-The credentials can either be stored in a .env file in the working directory (as explained in the Prerequisites section) or given directly as arguments to the `auth` dict:e
+The credentials can either be stored in a .env file in the working directory (as explained in the Prerequisites section), provided as a path, or given directly as arguments to the `auth` dict.
 ```python
 # Create a client with device flow, give authentication details directly.
 client = Client.with_device(
