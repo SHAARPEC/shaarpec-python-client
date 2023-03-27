@@ -1,3 +1,7 @@
+## 2.3.0 (March 27, 2023)
+- Add support for client credentials flow.
+- Update dependencies.
+
 ## 2.2.2 (February 24, 2023)
 - Fixed package dependency for progressbar.
 
