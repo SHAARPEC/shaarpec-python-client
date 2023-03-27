@@ -7,8 +7,7 @@ import time
 import background
 import httpx
 
-from oidcish.device import DeviceFlow
-from oidcish.code import CodeFlow
+from oidcish import DeviceFlow, CodeFlow, CredentialsFlow
 
 from shaarpec.tasks import Task
 
@@ -208,6 +207,66 @@ class Client:
             case dict():
                 auth_host = auth.pop("host")
                 return cls(host=host, auth=CodeFlow(host=auth_host, **auth), **kwargs)
+            case _:
+                raise TypeError(
+                    f"Object {auth} is not of recognized type ({type(auth)})."
+                )
+
+    @classmethod
+    def with_credentials(
+        cls, host: str, auth: Union[dict[str, Any], str, None], **kwargs
+    ) -> Client:
+        """Authenticate with IDP host using client credentials flow.
+
+        The IDP host must support client credentials flow. Authentication can be provided to
+        `auth` as a dict, as environment variables, or as the path to an env file. The
+        environment variables are always prefixed with OIDCISH, so OIDCISH_CLIENT_ID
+        etc.
+        \f
+        Parameters
+        ----------
+          host : str
+            The Analytics API base URL.
+          auth : dict or string
+            Authentication details and other arguments.
+
+            If dict, then valid keywords in this dict are:
+              host: str, The IDP host name (OIDCISH_HOST).
+              client_id: str, The client ID (OIDCISH_CLIENT_ID).
+              client_secret: str, The client secret (OIDCISH_CLIENT_SECRET).
+              audience: str, The access claim was designated for this audience
+                (OIDCISH_AUDIENCE).
+
+            If string, then path to file with the corresponding variables.
+
+        Examples
+        --------
+        >>> from shaarpec import Client
+        >>> client = Client.with_credentials(
+                "https://api.shaarpec.com",
+                auth={
+                    "host": "https://idp.example.com",
+                    "client_id": ...,
+                    "client_secret": ...,
+                    "audience": ...,
+                }
+            )
+        # Or, read auth variables from env file
+        >>> client = Client.with_credentials(
+                host="https://api.shaarpec.com",
+                auth="path/to/my/file.env"
+            )
+        >>> client.get("terminology/allergy_type").json()
+        ...
+        """
+        match auth:
+            case None:
+                return cls(host=host, auth=None, **kwargs)
+            case str():
+                return cls(host=host, auth=CredentialsFlow(_env_file=auth), **kwargs)
+            case dict():
+                auth_host = auth.pop("host")
+                return cls(host=host, auth=CredentialsFlow(host=auth_host, **auth), **kwargs)
             case _:
                 raise TypeError(
                     f"Object {auth} is not of recognized type ({type(auth)})."
