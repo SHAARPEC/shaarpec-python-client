@@ -1,3 +1,6 @@
+## 2.3.1 (April 6, 2023)
+- Upgrade to latest version of oidcish with fixed refresh flow for client credentials.
+
 ## 2.3.0 (March 27, 2023)
 - Add support for client credentials flow.
 - Update dependencies.
