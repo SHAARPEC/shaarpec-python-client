@@ -1,3 +1,7 @@
+## 2.3.2 (May 2, 2023)
+
+-   Fix string format bug when raising failed task error.
+
 ## 2.3.1 (April 6, 2023)
 - Upgrade to latest version of oidcish with fixed refresh flow for client credentials.
 
