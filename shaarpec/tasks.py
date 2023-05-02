@@ -48,7 +48,7 @@ class Task(BaseModel):
         if not self.success:
             raise ValueError(
                 f"Task failed with status {self.status} and "
-                f"{'error: ' + self.error if self.error else 'no message.'}"
+                f"{'error: ' + str(self.error) if self.error else 'no message.'}"
             )
 
         return self.result
