@@ -1,6 +1,6 @@
 ## 2.3.2 (May 2, 2023)
 
--   Fix string format bug when raising failed task error.
+-   Fix string format bug when raising failed task error (PR https://github.com/SHAARPEC/shaarpec-python-client/pull/3).
 
 ## 2.3.1 (April 6, 2023)
 
