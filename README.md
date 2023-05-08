@@ -1,4 +1,3 @@
-
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -7,12 +6,12 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -35,8 +34,6 @@
   </p>
 </div>
 
-
-
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -55,15 +52,15 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 [![SHAARPEC API screenshot][product-screenshot]](https://www.shaarpec.com)
@@ -76,12 +73,13 @@ The SHAARPEC Analytics API provides calculations on the healthcare organization'
 
 ### Built With
 
-* [![Httpx][Httpx]][Httpx]
-* [![Python][Python]][Python-url]
+-   [![Httpx][Httpx]][Httpx]
+-   [![Python][Python]][Python-url]
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 ### Prerequisites
@@ -91,29 +89,31 @@ The shaarpec client is used as a standard Python library. It is always a good id
 ### Installation
 
 1. Install the library into your virtual environment.
-   ```bash
-   pip install shaarpec
-   ```
+    ```bash
+    pip install shaarpec
+    ```
 2. Store your credentials to the SHAARPEC IdentityServer in an .env file.
-   ```bash
-   $ cat .env
-   OIDCISH_HOST="https://idp.example.com"
-   OIDCISH_CLIENT_ID="my client id"
-   OIDCISH_CLIENT_SECRET="my client secret"
-   OIDCISH_AUDIENCE="shaarpec_api.full_access_scope"
-   OIDCISH_SCOPE="openid shaarpec_api.full_access_scope offline_access"
-   ```
+    ```bash
+    $ cat .env
+    OIDCISH_HOST="https://idp.example.com"
+    OIDCISH_CLIENT_ID="my client id"
+    OIDCISH_CLIENT_SECRET="my client secret"
+    OIDCISH_AUDIENCE="shaarpec_api.full_access_scope"
+    OIDCISH_SCOPE="openid shaarpec_api.full_access_scope offline_access"
+    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
-This library provides a Client class to easily interact with the SHAARPEC Analytics API. The class methods `Client.with_device(...)`,  `Client.with_code(...)`, and `Client.with_credentials(...)` create clients that authenticate with the SHAARPEC IdentityServer with either device flow (not tied to an individual user, recommended), code flow (tied to an individual user, for debugging and development), or credentials flow (non-interactive). There is also a class method `Client.without_auth(...)` that does not invoke the IDP server (but will only work if the Analytics API is public, otherwise give 401 Authentication invalid errors).
+This library provides a Client class to easily interact with the SHAARPEC Analytics API. The class methods `Client.with_device(...)`, `Client.with_code(...)`, and `Client.with_credentials(...)` create clients that authenticate with the SHAARPEC IdentityServer with either device flow (not tied to an individual user, recommended), code flow (tied to an individual user, for debugging and development), or credentials flow (non-interactive). There is also a class method `Client.without_auth(...)` that does not invoke the IDP server (but will only work if the Analytics API is public, otherwise give 401 Authentication invalid errors).
 
 All API data is returned as `httpx.Response` objects.
 
 Let's look at some code examples on how to get data from the Analytics API. First, import the client.
+
 ```python
 from shaarpec import Client
 ```
@@ -121,6 +121,7 @@ from shaarpec import Client
 Next, use [device flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/device-authorization-flow) or [code flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/authorization-code-flow) to connect the client to the API with the `Client.with_device(...)`, `Client.with_code(...)`, and/or `Client.with_credentials(...)` class methods.
 
 The credentials can either be stored in a .env file in the working directory (as explained in the Prerequisites section), provided as a path, or given directly as arguments to the `auth` dict.
+
 ```python
 # Create a client with device flow, give authentication details directly.
 client = Client.with_device(
@@ -136,6 +137,7 @@ client = Client.with_device(
 # Create a client with device flow, read authentication details from .env file.
 client = Client.with_device(host="https://api.shaarpec.com/", auth="path/to/.env")
 ```
+
 Here `host` is the base URL to the Analytics API and `auth` is a dictionary with the login credentials. With device flow, the user needs to finish the sign-in by visiting a url provided by the IdentityServer. A message will be shown:
 
 > Visit https://idp.shaarpec.com/device?userCode=XXXXXXXXX to complete sign-in.
@@ -144,15 +146,18 @@ The user visits the website, verifies that the user code is correct and confirms
 
 > SUCCESS: Authentication was successful. Took XX.Y seconds.
 
-The client is now connected to the API. Visit the Analytics API Base URL to interactively test the endpoints and read their documentation and about their path and query parameters. These parameters are used in the regular (`requests` and `httpx`) way with `client.verb` calls, where `verb` is either `get` or `post`. 
+The client is now connected to the API. Visit the Analytics API Base URL to interactively test the endpoints and read their documentation and about their path and query parameters. These parameters are used in the regular (`requests` and `httpx`) way with `client.verb` calls, where `verb` is either `get` or `post`.
 
 ### GET and POST
 
 The `get` and `post` verbs are supported in the standard way. For example (API responses are returned as `httpx.Response` objects):
+
 ```python
 client.get("terminology/allergy_type").json()
 ```
+
 might return
+
 ```
 {'419263009': 'Allergy to tree pollen',
  '420174000': 'Allergy to wheat',
@@ -170,11 +175,15 @@ might return
  '300916003': 'Latex allergy',
  '424213003': 'Allergy to bee venom'}
 ```
+
 or
+
 ```python
 client.get("population", conditions=["T78.2", "K81.0"])
 ```
+
 might return
+
 ```
 [{'patient_origin_id': '4c92f494-3c98-f8dd-1473-da9eb0196f6f',
     'age': '10-16',
@@ -210,6 +219,7 @@ class Task(BaseModel):
     error: Optional[Any]
     debugger: Optional[Any]
 ```
+
 As you can see, the success, progress, result and error are optional and updated automatically when available. The method comes with a progress bar which can be disabled via `client.run("path/to/task", progress_bar=False)`. If you want to use the task result in a subsequent command, you can wait (blocking) for the result with the `task.wait_for_result()` method:
 
 ```python
@@ -217,27 +227,47 @@ task = client.run("path/to/task")
 print(f"The result is: {task.wait_for_result()}!")
 ```
 
-
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- TROUBLESHOOTING -->
+
+## Troubleshooting
+
+### Progress bar fails to render in (Dockerized) Jupyter Lab
+
+Sometimes (especially in a Dockerized environment) the progress bar fails to render when running a task. This seems to be related to an issue in `tqdm` and its dependencies. A workaround seems to be to run:
+
+```bash
+jupyter lab build
+```
+
+in the environment (in a terminal inside the running Docker container) and refresh the browser. This requires a `node.js` installation first, e.g. per:
+
+```
+conda install -c conda-forge nodejs
+```
+
+See discussion for [issue 1310](https://github.com/tqdm/tqdm/issues/1310)
+on the `tqdm` Github repo.
+
 <!-- ROADMAP -->
+
 ## Roadmap
 
 See the [open issues](https://github.com/SHAARPEC/shaarpec-python-client/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
 <!-- CONTACT -->
+
 ## Contact
 
 SHAARPEC Support - support@shaarpec.com
@@ -246,9 +276,9 @@ Project Link: [https://github.com/SHAARPEC/shaarpec-python-client](https://githu
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/SHAARPEC/shaarpec-python-client.svg?style=for-the-badge
 [contributors-url]: https://github.com/SHAARPEC/shaarpec-python-client/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/SHAARPEC/shaarpec-python-client.svg?style=for-the-badge
