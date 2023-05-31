@@ -66,9 +66,8 @@ class Client:
     """
 
     def __init__(
-        self, host: str, auth: Optional[Union[CodeFlow, DeviceFlow]], **kwargs
+        self, host: str, auth: Optional[Union[CodeFlow, DeviceFlow]], timeout:int = 60, **kwargs
     ) -> None:
-        timeout = kwargs.pop("timeout", 60)
         self._auth = auth
         self._client = httpx.Client(
             base_url=host,
@@ -119,7 +118,8 @@ class Client:
                     "client_secret": ...,
                     "scope": ...,
                     "audience": ...,
-                }
+                },
+                timeout=120,
             )
         # Or, read auth variables from env file
         >>> client = Client.with_device(
