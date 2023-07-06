@@ -16,11 +16,11 @@ class Task(BaseModel):
     task_id: str
     submitted_at: str
     status: str
-    success: Optional[bool]
-    progress: Optional[float]
-    result: Optional[Any]
-    error: Optional[Any]
-    debugger: Optional[Debugger]
+    success: Optional[bool] = None
+    progress: Optional[float] = None
+    result: Optional[Any] = None
+    error: Optional[Any] = None
+    _debugger: Optional[Debugger] = None
 
     @background.task
     def print(self, update_interval: float = 0.1) -> None:

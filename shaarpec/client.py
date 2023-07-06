@@ -15,9 +15,9 @@ from shaarpec.tasks import Task
 class Client:
     """Client for SHAARPEC Analytics API.
 
-    The input is the base URL to the Analytics API and authentication credentials via device or
-    code flow. The `.with_device(...)` and `.with_code(...)` class methods are provided and can
-    be used to construct a client. See examples of usage.
+    The input is the base URL to the Analytics API and authentication credentials via
+    device or code flow. The `.with_device(...)` and `.with_code(...)` class methods
+    are provided and can be used to construct a client. See examples of usage.
 
     API data is returned as `httpx.Response` objects.
     \f
@@ -66,7 +66,10 @@ class Client:
     """
 
     def __init__(
-        self, host: str, auth: Optional[Union[CodeFlow, DeviceFlow]], **kwargs
+        self,
+        host: str,
+        auth: Optional[Union[CodeFlow, DeviceFlow, CredentialsFlow]],
+        **kwargs,
     ) -> None:
         timeout = kwargs.pop("timeout", 60)
         self._auth = auth
@@ -218,10 +221,10 @@ class Client:
     ) -> Client:
         """Authenticate with IDP host using client credentials flow.
 
-        The IDP host must support client credentials flow. Authentication can be provided to
-        `auth` as a dict, as environment variables, or as the path to an env file. The
-        environment variables are always prefixed with OIDCISH, so OIDCISH_CLIENT_ID
-        etc.
+        The IDP host must support client credentials flow. Authentication can be
+        provided to`auth` as a dict, as environment variables, or as the path to an
+        env file. The environment variables are always prefixed with OIDCISH, so
+        OIDCISH_CLIENT_ID etc.
         \f
         Parameters
         ----------
@@ -266,7 +269,9 @@ class Client:
                 return cls(host=host, auth=CredentialsFlow(_env_file=auth), **kwargs)
             case dict():
                 auth_host = auth.pop("host")
-                return cls(host=host, auth=CredentialsFlow(host=auth_host, **auth), **kwargs)
+                return cls(
+                    host=host, auth=CredentialsFlow(host=auth_host, **auth), **kwargs
+                )
             case _:
                 raise TypeError(
                     f"Object {auth} is not of recognized type ({type(auth)})."
@@ -292,7 +297,7 @@ class Client:
         return cls(host=host, auth=None, **kwargs)
 
     @property
-    def auth(self) -> Optional[Union[CodeFlow, DeviceFlow]]:
+    def auth(self) -> Optional[Union[CodeFlow, DeviceFlow, CredentialsFlow]]:
         """Return the authentication credentials."""
         return self._auth
 
@@ -398,7 +403,7 @@ class Client:
             progress=None,
             result=None,
             error=None,
-            debugger=None,
+            _debugger=None,
         )
 
         if progress_bar:
@@ -416,14 +421,16 @@ class Client:
             match response.status_code:
                 case 401:
                     print(
-                        f"Not authorized to run task id {task.task_id} on service {task.service}."
+                        f"Not authorized to run task id {task.task_id} "
+                        f"on service {task.service}."
                     )
                     task.success = False
                     task.status = "unauthorized"
 
                 case 404:
                     print(
-                        f"Task with id {task.task_id} could not be found on service {task.service}."
+                        f"Task with id {task.task_id} could not be found "
+                        f"on service {task.service}."
                     )
                     task.success = False
                     task.status = "not_found"
