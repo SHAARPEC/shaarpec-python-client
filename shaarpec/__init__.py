@@ -1,2 +1,2 @@
 """Library for SHAARPEC Analytics API."""
-from shaarpec.client import Client
+from shaarpec.client import Client as Client
