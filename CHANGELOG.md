@@ -1,3 +1,9 @@
+## 2.4.0 (July 6, 2023)
+
+-   Migrated to ruff for linting.
+-   Migrated to pydantic v2.
+-   Upgraded all dependencies.
+
 ## 2.3.3 (May 8, 2023)
 
 -   Fixed progressbar in jupyter again.
