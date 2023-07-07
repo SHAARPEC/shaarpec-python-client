@@ -1,3 +1,8 @@
+## 2.5.0 (July 7, 2023)
+
+-   Add `httpx_kwargs` argument so that API calls can use httpx parameters such as `timeout` etc (#X).
+-   Upgrade to oidcish version 1.0.1.
+
 ## 2.4.0 (July 6, 2023)
 
 -   Migrated to ruff for linting.
