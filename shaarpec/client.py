@@ -1,6 +1,6 @@
 """Client for SHAARPEC Analytics API."""
-from __future__ import annotations
 from typing import Optional, Union, Any
+from typing_extensions import Self
 import pathlib
 import time
 
@@ -83,7 +83,7 @@ class Client:
     @classmethod
     def with_device(
         cls, host: str, auth: Union[dict[str, Any], str, None], **kwargs
-    ) -> Client:
+    ) -> Self:
         """Authenticate with IDP host using device flow.
 
         The IDP host must support device flow. Authentication can be provided to
@@ -148,7 +148,7 @@ class Client:
     @classmethod
     def with_code(
         cls, host: str, auth: Optional[dict[str, Any]] = None, **kwargs
-    ) -> Client:
+    ) -> Self:
         """Authenticate with IDP server using code flow.
 
         The IDP host must support authorization code flow. Authentication can be
@@ -218,7 +218,7 @@ class Client:
     @classmethod
     def with_credentials(
         cls, host: str, auth: Union[dict[str, Any], str, None], **kwargs
-    ) -> Client:
+    ) -> Self:
         """Authenticate with IDP host using client credentials flow.
 
         The IDP host must support client credentials flow. Authentication can be
@@ -278,7 +278,7 @@ class Client:
                 )
 
     @classmethod
-    def without_auth(cls, host: str, **kwargs) -> Client:
+    def without_auth(cls, host: str, **kwargs) -> Self:
         """Create a client that does not use authentication.
 
         \f
