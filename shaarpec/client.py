@@ -301,7 +301,9 @@ class Client:
         """Return the authentication credentials."""
         return self._auth
 
-    def get(self, uri: str, **kwargs) -> httpx.Response:
+    def get(
+        self, uri: str, httpx_kwargs: dict[str, Any] = {}, **kwargs
+    ) -> httpx.Response:
         """Get the resource at `uri`.
 
         Keyword arguments are passed as query parameters.
@@ -321,13 +323,21 @@ class Client:
             uri,
             headers=headers,
             params=kwargs,
+            **httpx_kwargs,
         )
 
         return response
 
     # pylint: disable=too-many-arguments
     def post(
-        self, uri: str, content=None, data=None, files=None, json=None, **kwargs
+        self,
+        uri: str,
+        content=None,
+        data=None,
+        files=None,
+        json=None,
+        httpx_kwargs: dict[str, Any] = {},
+        **kwargs,
     ) -> httpx.Response:
         """Post to the resource at `uri`.
 
@@ -352,6 +362,7 @@ class Client:
             json=json,
             headers=headers,
             params=kwargs,
+            **httpx_kwargs,
         )
 
         return response
@@ -365,6 +376,7 @@ class Client:
         json=None,
         poll_interval: float = 0.1,
         progress_bar: bool = True,
+        httpx_kwargs: dict[str, Any] = {},
         **kwargs,
     ) -> Task:
         """Run a task at resource `uri`.
@@ -376,7 +388,13 @@ class Client:
         service = pathlib.Path(uri).parts[0]
 
         response = self.post(
-            uri=uri, content=content, data=data, files=files, json=json, **kwargs
+            uri=uri,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            httpx_kwargs=httpx_kwargs,
+            **kwargs,
         )
 
         match response.status_code:
@@ -409,14 +427,16 @@ class Client:
         if progress_bar:
             task.print()
 
-        self._wait_for_task(task, poll_interval=poll_interval)
+        self._wait_for_task(task, poll_interval=poll_interval, **httpx_kwargs)
 
         return task
 
     @background.task
-    def _wait_for_task(self, task: Task, poll_interval: float = 0.1) -> None:
+    def _wait_for_task(self, task: Task, poll_interval: float = 0.1, **kwargs) -> None:
         while task.status in ("submitted", "queued", "in_progress"):
-            response = self.get(f"{task.service}/tasks/{task.task_id}/status")
+            response = self.get(
+                f"{task.service}/tasks/{task.task_id}/status", httpx_kwargs=kwargs
+            )
 
             match response.status_code:
                 case 401:
@@ -451,7 +471,8 @@ class Client:
 
                         case {"status": "complete", "success": True} as data:
                             resp = self.get(
-                                f"{task.service}/tasks/{task.task_id}/results"
+                                f"{task.service}/tasks/{task.task_id}/results",
+                                httpx_kwargs=kwargs,
                             )
 
                             task.result = resp.json().get("result")
