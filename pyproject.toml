@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shaarpec"
-version = "2.4.0"
+version = "2.5.0"
 description = "Client for SHAARPEC Analytics API."
 authors = ["Erik G. Brandt <erik.brandt@shaarpec.com>"]
 readme = "README.md"
@@ -8,7 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 httpx = "^0.24.1"
-oidcish = "^1.0.0"
+oidcish = "^1.0.1"
 anybadge = "^1.14.0"
 anyio = "^3.7.1"
 argon2-cffi = "^21.3.0"

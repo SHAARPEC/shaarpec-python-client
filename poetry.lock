@@ -1827,13 +1827,13 @@ files = [
 
 [[package]]
 name = "oidcish"
-version = "1.0.0"
+version = "1.0.1"
 description = "Obtain authentication tokens from OIDC providers."
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "oidcish-1.0.0-py3-none-any.whl", hash = "sha256:8c4d7cf887ef63c043bf4fd2db70fcafb1ed3012f4925882e12d126b45d9f144"},
-    {file = "oidcish-1.0.0.tar.gz", hash = "sha256:173ddf3613be9c66026ed242c69f57143fa6b132b7775fd95a0db6f1c3b638b1"},
+    {file = "oidcish-1.0.1-py3-none-any.whl", hash = "sha256:d2a96f77ca5d6f77119abd8ff8236282086b7e45632202041ffe6fb2bce7dc5a"},
+    {file = "oidcish-1.0.1.tar.gz", hash = "sha256:04e458d60ec5d620c1e41e42b9877058f737596ef25f84d3d620e625dadacacf"},
 ]
 
 [package.dependencies]
@@ -3175,4 +3175,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "77bec5458abe0b61523a3d8879b3e900cd5c514f0ab3a1e5a43cdde301f1d1f6"
+content-hash = "cdbf603bb3af5e26d0630c9f115eba8b6702df24d1dc2f6b78042dbb2f7281a6"

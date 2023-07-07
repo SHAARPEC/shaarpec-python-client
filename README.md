@@ -146,7 +146,7 @@ The user visits the website, verifies that the user code is correct and confirms
 
 > SUCCESS: Authentication was successful. Took XX.Y seconds.
 
-The client is now connected to the API. Visit the Analytics API Base URL to interactively test the endpoints and read their documentation and about their path and query parameters. These parameters are used in the regular (`requests` and `httpx`) way with `client.verb` calls, where `verb` is either `get` or `post`.
+The client is now connected to the API. Visit the Analytics API Base URL to interactively test the endpoints and read the documentation about their path and query parameters. These parameters are used in the regular [requests](https://requests.readthedocs.io/en/latest) and [httpx](https://www.python-httpx.org/) way with `client.verb` calls, where `verb` is either `get`, `post`, or `run` (see below).
 
 ### GET and POST
 
@@ -179,7 +179,7 @@ might return
 or
 
 ```python
-client.get("population", conditions=["T78.2", "K81.0"])
+client.post("population", conditions=["T78.2", "K81.0"])
 ```
 
 might return
@@ -193,6 +193,15 @@ might return
  ...
 ]
 ```
+
+You can send keyword arguments to the underlying `httpx` calls via the `httpx_kwargs` parameter, for example:
+
+```python
+client.get("terminology/condition_type/codes", httpx_kwargs={"timeout": 120}).json()
+# Sends API call with 120 second timeout)
+```
+
+Read about the available parameters in the [httpx documentation](https://www.python-httpx.org/).
 
 ### Running tasks
 
@@ -217,7 +226,6 @@ class Task(BaseModel):
     progress: Optional[float]
     result: Optional[Any]
     error: Optional[Any]
-    debugger: Optional[Any]
 ```
 
 As you can see, the success, progress, result and error are optional and updated automatically when available. The method comes with a progress bar which can be disabled via `client.run("path/to/task", progress_bar=False)`. If you want to use the task result in a subsequent command, you can wait (blocking) for the result with the `task.wait_for_result()` method:
